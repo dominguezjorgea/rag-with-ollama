@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+
+  chatollama:
+    image: 0001coder/chatollama:latest
+    container_name: chatollama
+    ports:
+      - "3001:3000"
+    depends_on:
+      - ollama
+      - redis
+      - chromadb
+    environment:
+      - OLLAMA_API=http://ollama:11434
+      - REDIS_URL=redis://redis:6379
+      - CHROMA_HOST=http://chromadb:8000
+    restart: unless-stopped
+
+  rag-processor:
+    build: ./rag-processor
+    container_name: rag-processor
+    volumes:
+      - ./rag-processor/data:/app/data
+    depends_on:
+      - ollama
+      - chromadb
+    ports:
+      - "5050:5050"
+    environment:
+      - OLLAMA_API=http://ollama:11434
+
+
+volumes:
+  ollama_data:
