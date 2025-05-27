@@ -44,6 +44,7 @@ services:
     container_name: rag-processor
     volumes:
       - ./rag-processor/data:/app/data
+      - ~/.cache/huggingface:/root/.cache/huggingface  # <--- Aquí se monta el caché
     depends_on:
       - ollama
       - chromadb
@@ -51,7 +52,6 @@ services:
       - "5050:5050"
     environment:
       - OLLAMA_API=http://ollama:11434
-
 
 volumes:
   ollama_data:

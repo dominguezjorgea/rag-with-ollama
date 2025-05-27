@@ -6,6 +6,10 @@ COPY . /app
 RUN pip install --no-cache-dir \
     langchain \
     langchain-community \
+    langchain-ollama \
+    langchain-huggingface \
+    langchain-unstructured \
+    langchain-chroma \
     chromadb \
     unstructured \
     pypdf \
@@ -18,4 +22,3 @@ RUN pip install --no-cache-dir \
 
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5050"]
-
