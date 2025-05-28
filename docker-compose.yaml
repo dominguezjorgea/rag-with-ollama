@@ -52,6 +52,18 @@ services:
     environment:
       - OLLAMA_API=http://ollama:11434
 
+  rag-ui:
+    build:
+      context: ./rag-processor
+      dockerfile: Dockerfile.streamlit
+    container_name: rag-ui
+    ports:
+      - "8501:8501"
+    depends_on:
+      - rag-processor
+    environment:
+      - RAG_API=http://rag-processor:5050
+
 
 volumes:
   ollama_data:
